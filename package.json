@@ -1,0 +1,32 @@
+{
+  "name": "ts-p5",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack serve --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cwgithub/ts-p5.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cwgithub/ts-p5/issues"
+  },
+  "homepage": "https://github.com/cwgithub/ts-p5#readme",
+  "devDependencies": {
+    "@types/p5": "^1.6.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
+    "webpack": "^5.78.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.2"
+  },
+  "dependencies": {
+    "p5": "^1.6.0"
+  }
+}
