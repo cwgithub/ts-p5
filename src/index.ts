@@ -1,6 +1,7 @@
 import * as p5 from "p5";
 import { PixelHelper } from "./PixelHelper";
 import { FloodFillNoiseCBW } from "./FloodFillNoiseCBW";
+import { Pixel } from "./Pixel";
 
 export const sketch = (p: p5) => {
   p.setup = () => {
@@ -27,7 +28,14 @@ export const sketch = (p: p5) => {
 
     p.updatePixels();
 
-    const ff = new FloodFillNoiseCBW(p);
+    let expa = 1;
+    let rez = 0.013;
+
+    const ff = new FloodFillNoiseCBW(p, expa, rez, fillColour);
+
+    const fillColour = new Pixel(0, 255, 0, 255);
+
+    ff.floodFillNoise(p.createVector(150, 150));
 
     p.noLoop();
 
