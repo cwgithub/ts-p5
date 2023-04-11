@@ -1,11 +1,4 @@
-export class Pixel {
-  constructor(
-    public r: number,
-    public g: number,
-    public b: number,
-    public alpha: number
-  ) {}
-}
+import { Pixel } from "./Pixel";
 
 export class PixelHelper {
   constructor(
