@@ -9,6 +9,7 @@ export const sketch = (p: p5) => {
   };
 
   p.draw = () => {
+    p.pixelDensity(1);
     p.background(220);
     p.ellipse(50, 50, 80, 80);
     p.quad(100, 100, 100, 200, 200, 200, 200, 100);
@@ -31,11 +32,11 @@ export const sketch = (p: p5) => {
     let expa = 1;
     let rez = 0.013;
 
-    const ff = new FloodFillNoiseCBW(p, expa, rez, fillColour);
+    const ff = new FloodFillNoiseCBW(p, expa, rez);
 
     const fillColour = new Pixel(0, 255, 0, 255);
 
-    ff.floodFillNoise(p.createVector(150, 150));
+    ff.floodFillNoise(p.createVector(150, 150), fillColour, 1000, 100);
 
     p.noLoop();
 
