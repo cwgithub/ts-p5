@@ -2,7 +2,9 @@ import * as p5 from "p5";
 import { Pixel } from "./Pixel";
 
 export class FloodFillNoiseCBW {
-  constructor(private p: p5, private _expa: number, private _rez: number) {}
+  static BlackPixel = new Pixel(0, 0, 0, 0);
+
+  constructor(private _p5: p5, private _expa: number, private _rez: number) {}
 
   floodFillNoise(
     seed: p5.Vector,
@@ -10,27 +12,27 @@ export class FloodFillNoiseCBW {
     noiseTime: number,
     noiseIncrement: number
   ) {
-    this.p.loadPixels();
+    this._p5.loadPixels();
     let stack = 0;
-    let index = 4 * (this.p.width * seed.y + seed.x);
+    let index = 4 * (this._p5.width * seed.y + seed.x);
 
-    // store the color where the seed is pointing
+    // store the color at the seed fill point
     const oldColor = new Pixel(
-      this.p.pixels[index],
-      this.p.pixels[index + 1],
-      this.p.pixels[index + 2],
-      this.p.pixels[index + 3]
+      this._p5.pixels[index],
+      this._p5.pixels[index + 1],
+      this._p5.pixels[index + 2],
+      this._p5.pixels[index + 3]
     );
 
     if (Pixel.pixelEquals(baseFillColor, oldColor, 10)) {
       return;
     }
 
-    //if close to black, stop
+    // if close to black, stop
     if (
-      this.p.pixels[index] < 10 &&
-      this.p.pixels[index + 1] < 10 &&
-      this.p.pixels[index + 2] < 10
+      this._p5.pixels[index] < 10 &&
+      this._p5.pixels[index + 1] < 10 &&
+      this._p5.pixels[index + 2] < 10
     ) {
       return;
     }
@@ -43,12 +45,13 @@ export class FloodFillNoiseCBW {
       // go until array is empty
       stack++;
       let current = queue.pop(); //current equals last element (vector) in queue array and then that last element is removed from array
-      index = 4 * (this.p.width * current.y + current.x);
+      index = 4 * (this._p5.width * current.y + current.x);
+
       let thisPixColor = new Pixel(
-        this.p.pixels[index],
-        this.p.pixels[index + 1],
-        this.p.pixels[index + 2],
-        this.p.pixels[index + 3]
+        this._p5.pixels[index],
+        this._p5.pixels[index + 1],
+        this._p5.pixels[index + 2],
+        this._p5.pixels[index + 3]
       );
 
       // don't do below function if the colors are the same
@@ -57,20 +60,20 @@ export class FloodFillNoiseCBW {
       }
 
       const n1 =
-        this.p.noise(
+        this._p5.noise(
           current.x * this._rez + noiseTime,
           current.y * this._rez + noiseTime
         ) * 1.4;
-      this.p.pixels[index + 0] = baseFillColor.r * n1;
-      this.p.pixels[index + 1] = baseFillColor.g * n1;
-      this.p.pixels[index + 2] = baseFillColor.b * n1;
-      this.p.pixels[index + 3] = baseFillColor.alpha;
+      this._p5.pixels[index + 0] = baseFillColor.r * n1;
+      this._p5.pixels[index + 1] = baseFillColor.g * n1;
+      this._p5.pixels[index + 2] = baseFillColor.b * n1;
+      this._p5.pixels[index + 3] = baseFillColor.alpha;
 
       //fill current pixel with variations of fill color
-      queue = this.expandToNeighboursOrig(this.p, queue, current);
+      queue = this.expandToNeighboursOrig(this._p5, queue, current);
     } //replacing the queue array with new array from the called function
 
-    this.p.updatePixels();
+    this._p5.updatePixels();
 
     noiseTime += noiseIncrement;
   }
