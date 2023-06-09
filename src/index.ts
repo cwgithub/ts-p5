@@ -72,7 +72,7 @@ export const sketch = (p: p5) => {
   function drawCube(tile: Tile) {
     // draw the outline of the grid base
     p.beginShape();
-    p.strokeWeight(0);
+    p.strokeWeight(1);
 
     const baseN = screenToRendered(tile.north);
     const baseE = screenToRendered(tile.east);
@@ -85,37 +85,81 @@ export const sketch = (p: p5) => {
     const topW = screenToRendered(tile.west, TILE_HEIGHT);
 
     // base
-    p.fill(255, 64, 64, 36);
-    p.quad(
-      baseN.x,
-      baseN.y,
-      baseE.x,
-      baseE.y,
-      baseS.x,
-      baseS.y,
-      baseW.x,
-      baseW.y
-    );
-    // south side
-    p.fill(255, 64, 64, 64);
+    p.fill(255, 64, 64, 12);
+    // p.quad(
+    //   baseN.x,
+    //   baseN.y,
+    //   baseE.x,
+    //   baseE.y,
+    //   baseS.x,
+    //   baseS.y,
+    //   baseW.x,
+    //   baseW.y
+    // );
+
+    // y end
+    p.fill(0, 255, 64);
     p.quad(topE.x, topE.y, baseE.x, baseE.y, baseS.x, baseS.y, topS.x, topS.y);
-    // west side
-    p.fill(255, 64, 64, 98);
+
+    // x wns
+    p.fill(255, 64, 64);
     p.quad(topS.x, topS.y, baseS.x, baseS.y, baseW.x, baseW.y, topW.x, topW.y);
+
     // top
-    p.fill(255, 64, 64, 123);
+    p.fill(64, 64, 255);
     p.quad(topN.x, topN.y, topE.x, topE.y, topS.x, topS.y, topW.x, topW.y);
 
     p.endShape();
   }
 
   function mergeTiles(startTile: Tile, endTile: Tile): Tile {
+    const xDiff = startTile.gridX - endTile.gridX;
+    const yDiff = startTile.gridY - endTile.gridY;
+
+    if (xDiff !== 0 && yDiff !== 0) {
+      throw new Error("Tiles must be on the same X or Y axis");
+    }
+
+    let north, east, south, west: p5.Vector;
+
+    // on same Y axis
+    if (xDiff === 0) {
+      if (yDiff < 0) {
+        north = startTile.north;
+        east = startTile.east;
+        south = endTile.south;
+        west = endTile.west;
+      } else {
+        north = endTile.north;
+        east = endTile.east;
+        south = startTile.south;
+        west = startTile.west;
+      }
+    }
+
+    // on same X axis
+    if (yDiff === 0) {
+      if (xDiff < 0) {
+        north = startTile.north;
+        east = endTile.east;
+        south = endTile.south;
+        west = startTile.west;
+      } else {
+        north = endTile.north;
+        east = startTile.east;
+        south = startTile.south;
+        west = endTile.west;
+      }
+    }
+
     return new Tile(
       `Merged ${startTile.id} and ${endTile.id}`,
-      startTile.north,
-      endTile.east,
-      endTile.south,
-      startTile.west
+      null,
+      null,
+      north,
+      east,
+      south,
+      west
     );
   }
 
@@ -131,6 +175,8 @@ export const sketch = (p: p5) => {
         const w = n + 1;
         const tile = new Tile(
           `[${x},${y}]`,
+          x,
+          y,
           points[n],
           points[e],
           points[s],
@@ -175,13 +221,13 @@ export const sketch = (p: p5) => {
 
     const tiles = pointsToTiles(gridPoints, points);
 
-    drawTile(tiles[2][2]);
-    drawCube(tiles[0][1]);
+    // drawTile(tiles[2][2]);
+    // drawCube(tiles[0][1]);
 
-    const mergedTitle = mergeTiles(tiles[0][4], tiles[8][0]);
+    const mergedTitle = mergeTiles(tiles[0][4], tiles[0][1]);
     drawCube(mergedTitle);
 
-    console.log(tiles);
+    drawCube(mergeTiles(tiles[0][6], tiles[4][6]));
   };
 };
 

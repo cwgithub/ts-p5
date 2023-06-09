@@ -1,6 +1,8 @@
 export class Tile {
   constructor(
     private _id: string,
+    private _gridX: number | null,
+    private _gridY: number | null,
     private _north: p5.Vector,
     private _east: p5.Vector,
     private _south: p5.Vector,
@@ -9,6 +11,14 @@ export class Tile {
 
   public get id(): string {
     return this._id;
+  }
+
+  public get gridX(): number {
+    return this._gridX;
+  }
+
+  public get gridY(): number {
+    return this._gridY;
   }
 
   public get north(): p5.Vector {
