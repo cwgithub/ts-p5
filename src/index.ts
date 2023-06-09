@@ -13,10 +13,10 @@ export const sketch = (p: p5) => {
   const TILE_HEIGHT = edgeLength / 2;
   const TILE_HEIGHT_HALF = TILE_HEIGHT / 2;
 
-  function mapToScreen(map: p5.Vector): p5.Vector {
+  function gridToScreen(grid: p5.Vector): p5.Vector {
     return new p5.Vector(
-      (map.x - map.y) * TILE_WIDTH_HALF,
-      (map.x + map.y) * TILE_HEIGHT_HALF
+      (grid.x - grid.y) * TILE_WIDTH_HALF,
+      (grid.x + grid.y) * TILE_HEIGHT_HALF
     );
   }
 
@@ -24,34 +24,8 @@ export const sketch = (p: p5) => {
     return new p5.Vector(500 + screen.x, yOffset + screen.y);
   }
 
-  var table;
-  var framePx = 150;
-
-  p.setup = () => {
-    // table = p.loadTable("/assets/colors.csv", "csv", "header");
-    p.createCanvas(1000, 1000);
-
-    p.strokeWeight(4);
-
-    // yOffset = p.height - 10 * TILE_HEIGHT_HALF;
-
-    yOffset = 200;
-
-    const points: p5.Vector[] = [];
-
-    for (let x = 0; x < gridSize; x++) {
-      for (let y = 0; y < gridSize; y++) {
-        let screen = mapToScreen(new p5.Vector(x, y));
-        console.log(screen);
-        points.push(screen);
-      }
-    }
-
-    points.forEach((point) => {
-      const renderedPoint = screenToRendered(point);
-      p.point(renderedPoint.x, renderedPoint.y);
-    });
-
+  function drawGridOutline(points: p5.Vector[]) {
+    // draw the outline of the grid base
     p.beginShape();
     p.color(123, 100);
     p.strokeWeight(1);
@@ -71,12 +45,41 @@ export const sketch = (p: p5) => {
       screenToRendered(points[90]).y
     );
 
-    p.translate(500 + points[0].x, yOffset + points[0].y);
-    p.vertex(500 + points[9].x, yOffset + points[9].y);
+    // p.translate(500 + points[0].x, yOffset + points[0].y);
+    // p.vertex(500 + points[9].x, yOffset + points[9].y);
     p.endShape();
-  };
+  }
 
-  p.draw = () => {};
+  var table;
+  var framePx = 150;
+
+  p.setup = () => {
+    // table = p.loadTable("/assets/colors.csv", "csv", "header");
+    p.createCanvas(1000, 1000);
+
+    p.strokeWeight(4);
+
+    // yOffset = p.height - 10 * TILE_HEIGHT_HALF;
+
+    yOffset = 200;
+
+    const points: p5.Vector[] = [];
+
+    for (let x = 0; x < gridSize; x++) {
+      for (let y = 0; y < gridSize; y++) {
+        let screen = gridToScreen(new p5.Vector(x, y));
+        console.log(screen);
+        points.push(screen);
+      }
+    }
+
+    points.forEach((point) => {
+      const renderedPoint = screenToRendered(point);
+      p.point(renderedPoint.x, renderedPoint.y);
+    });
+
+    drawGridOutline(points);
+  };
 };
 
 // p.draw = () => {
