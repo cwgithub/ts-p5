@@ -7,6 +7,10 @@ export class Tile {
     private _west: p5.Vector
   ) {}
 
+  public get id(): string {
+    return this._id;
+  }
+
   public get north(): p5.Vector {
     return this._north;
   }
