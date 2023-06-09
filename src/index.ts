@@ -86,7 +86,6 @@ export const sketch = (p: p5) => {
 
     // base
     p.fill(255, 64, 64, 36);
-
     p.quad(
       baseN.x,
       baseN.y,
@@ -97,22 +96,27 @@ export const sketch = (p: p5) => {
       baseW.x,
       baseW.y
     );
-
     // south side
     p.fill(255, 64, 64, 64);
-
     p.quad(topE.x, topE.y, baseE.x, baseE.y, baseS.x, baseS.y, topS.x, topS.y);
-
     // west side
     p.fill(255, 64, 64, 98);
-
     p.quad(topS.x, topS.y, baseS.x, baseS.y, baseW.x, baseW.y, topW.x, topW.y);
-
     // top
     p.fill(255, 64, 64, 123);
     p.quad(topN.x, topN.y, topE.x, topE.y, topS.x, topS.y, topW.x, topW.y);
 
     p.endShape();
+  }
+
+  function mergeTiles(startTile: Tile, endTile: Tile): Tile {
+    return new Tile(
+      `Merged ${startTile.id} and ${endTile.id}`,
+      startTile.north,
+      endTile.east,
+      endTile.south,
+      startTile.west
+    );
   }
 
   function pointsToTiles(gridPoints: number, points: p5.Vector[]): Tile[][] {
@@ -147,8 +151,6 @@ export const sketch = (p: p5) => {
     // table = p.loadTable("/assets/colors.csv", "csv", "header");
     p.createCanvas(1000, 1000);
 
-    p.strokeWeight(4);
-
     // yOffset = p.height - 10 * TILE_HEIGHT_HALF;
 
     yOffset = 200;
@@ -163,6 +165,7 @@ export const sketch = (p: p5) => {
       }
     }
 
+    p.strokeWeight(0.5);
     points.forEach((point) => {
       const renderedPoint = screenToRendered(point);
       p.point(renderedPoint.x, renderedPoint.y);
@@ -173,8 +176,10 @@ export const sketch = (p: p5) => {
     const tiles = pointsToTiles(gridPoints, points);
 
     drawTile(tiles[2][2]);
-
     drawCube(tiles[0][1]);
+
+    const mergedTitle = mergeTiles(tiles[0][4], tiles[8][0]);
+    drawCube(mergedTitle);
 
     console.log(tiles);
   };
