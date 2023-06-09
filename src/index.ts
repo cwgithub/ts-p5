@@ -8,6 +8,7 @@ export const sketch = (p: p5) => {
   const gridPoints = 10;
   const edgeLength = 80;
   let yOffset = 0;
+  let tiles: Tile[][];
 
   const TILE_WIDTH = edgeLength;
   const TILE_WIDTH_HALF = TILE_WIDTH / 2;
@@ -28,9 +29,8 @@ export const sketch = (p: p5) => {
   function drawGridOutline(gridPoints: number, points: p5.Vector[]) {
     // draw the outline of the grid base
     p.beginShape();
-    p.color(123, 100);
+    p.fill(188, 100);
     p.strokeWeight(1);
-    p.noFill();
 
     const firstOfLastCol = (gridPoints - 1) * gridPoints;
     const lastPoint = gridPoints * gridPoints - 1;
@@ -69,23 +69,48 @@ export const sketch = (p: p5) => {
     p.endShape();
   }
 
-  function drawCube(tile: Tile) {
+  function drawFloorHole(tile: Tile) {
+    const baseN = screenToRendered(tile.north);
+    const baseE = screenToRendered(tile.east);
+    const baseS = screenToRendered(tile.south);
+    const baseW = screenToRendered(tile.west);
+
+    p.beginShape();
+    p.strokeWeight(0.5);
+    p.fill(255);
+    p.quad(
+      baseN.x,
+      baseN.y,
+      baseE.x,
+      baseE.y,
+      baseS.x,
+      baseS.y,
+      baseW.x,
+      baseW.y
+    );
+
+    p.line(baseN.x, baseN.y, baseS.x, baseS.y);
+
+    p.endShape();
+  }
+
+  function drawCube(tile: Tile, height = TILE_HEIGHT) {
     // draw the outline of the grid base
     p.beginShape();
-    p.strokeWeight(1);
+    p.strokeWeight(0.5);
 
     const baseN = screenToRendered(tile.north);
     const baseE = screenToRendered(tile.east);
     const baseS = screenToRendered(tile.south);
     const baseW = screenToRendered(tile.west);
 
-    const topN = screenToRendered(tile.north, TILE_HEIGHT);
-    const topE = screenToRendered(tile.east, TILE_HEIGHT);
-    const topS = screenToRendered(tile.south, TILE_HEIGHT);
-    const topW = screenToRendered(tile.west, TILE_HEIGHT);
+    const topN = screenToRendered(tile.north, height);
+    const topE = screenToRendered(tile.east, height);
+    const topS = screenToRendered(tile.south, height);
+    const topW = screenToRendered(tile.west, height);
 
     // base
-    p.fill(255, 64, 64, 12);
+    p.fill(123);
     // p.quad(
     //   baseN.x,
     //   baseN.y,
@@ -98,15 +123,15 @@ export const sketch = (p: p5) => {
     // );
 
     // y end
-    p.fill(0, 255, 64);
+    p.fill(123);
     p.quad(topE.x, topE.y, baseE.x, baseE.y, baseS.x, baseS.y, topS.x, topS.y);
 
     // x wns
-    p.fill(255, 64, 64);
+    p.fill(234);
     p.quad(topS.x, topS.y, baseS.x, baseS.y, baseW.x, baseW.y, topW.x, topW.y);
 
     // top
-    p.fill(64, 64, 255);
+    p.fill(255);
     p.quad(topN.x, topN.y, topE.x, topE.y, topS.x, topS.y, topW.x, topW.y);
 
     p.endShape();
@@ -219,15 +244,33 @@ export const sketch = (p: p5) => {
 
     drawGridOutline(gridPoints, points);
 
-    const tiles = pointsToTiles(gridPoints, points);
+    tiles = pointsToTiles(gridPoints, points);
+  };
 
-    // drawTile(tiles[2][2]);
-    // drawCube(tiles[0][1]);
+  p.draw = () => {
+    p.noLoop();
+
+    drawTile(tiles[2][2]);
+    drawCube(tiles[4][4], 10);
+    drawCube(tiles[5][4], 5);
+    drawCube(tiles[4][5], 30);
+    drawCube(tiles[5][5], 20);
+
+    drawFloorHole(tiles[6][5]);
 
     const mergedTitle = mergeTiles(tiles[0][4], tiles[0][1]);
     drawCube(mergedTitle);
 
     drawCube(mergeTiles(tiles[0][6], tiles[4][6]));
+
+    drawCube(tiles[0][7], p.random(20));
+    drawCube(tiles[1][7], p.random(20));
+    drawCube(tiles[2][7], p.random(20));
+    drawCube(tiles[3][7], p.random(20));
+    drawCube(tiles[4][7], p.random(20));
+    drawCube(tiles[5][7], p.random(20));
+    drawCube(tiles[6][7], p.random(20));
+    drawCube(tiles[7][7], p.random(20));
   };
 };
 
