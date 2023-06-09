@@ -179,8 +179,8 @@ export const sketch = (p: p5) => {
 
     return new Tile(
       `Merged ${startTile.id} and ${endTile.id}`,
-      null,
-      null,
+      (startTile.gridX + endTile.gridX) / 2,
+      (startTile.gridY + endTile.gridY) / 2,
       north,
       east,
       south,
@@ -250,27 +250,42 @@ export const sketch = (p: p5) => {
   p.draw = () => {
     p.noLoop();
 
-    drawTile(tiles[2][2]);
-    drawCube(tiles[4][4], 10);
-    drawCube(tiles[5][4], 5);
-    drawCube(tiles[4][5], 30);
-    drawCube(tiles[5][5], 20);
+    // drawTile(tiles[2][2]);
+    // drawCube(tiles[4][4], 10);
+    // drawCube(tiles[5][4], 5);
+    // drawCube(tiles[4][5], 30);
+    // drawCube(tiles[5][5], 20);
 
-    drawFloorHole(tiles[6][5]);
+    // drawFloorHole(tiles[6][5]);
 
-    const mergedTitle = mergeTiles(tiles[0][4], tiles[0][1]);
-    drawCube(mergedTitle);
+    // const mergedTitle = mergeTiles(tiles[0][4], tiles[0][1]);
+    // drawCube(mergedTitle);
 
-    drawCube(mergeTiles(tiles[0][6], tiles[4][6]));
+    // drawCube(mergeTiles(tiles[0][3], tiles[4][3]));
 
-    drawCube(tiles[0][7], p.random(20));
-    drawCube(tiles[1][7], p.random(20));
-    drawCube(tiles[2][7], p.random(20));
-    drawCube(tiles[3][7], p.random(20));
-    drawCube(tiles[4][7], p.random(20));
-    drawCube(tiles[5][7], p.random(20));
-    drawCube(tiles[6][7], p.random(20));
-    drawCube(tiles[7][7], p.random(20));
+    // drawCube(
+    //   mergeTiles(
+    //     mergeTiles(tiles[0][2], tiles[4][2]),
+    //     mergeTiles(tiles[0][3], tiles[4][3])
+    //   )
+    // );
+
+    // drawCube(tiles[0][7], p.random(20));
+    // drawCube(tiles[1][7], p.random(20));
+    // drawCube(tiles[2][7], p.random(20));
+    // drawCube(tiles[3][7], p.random(20));
+    // drawCube(tiles[4][7], p.random(20));
+    // drawCube(tiles[5][7], p.random(20));
+    // drawCube(tiles[6][7], p.random(20));
+    // drawCube(tiles[7][7], p.random(20));
+
+    drawCube(mergeTiles(tiles[3][0], tiles[4][0]), 100);
+    drawCube(mergeTiles(tiles[3][1], tiles[4][1]), 100);
+
+    const t1 = mergeTiles(tiles[3][2], tiles[4][2]);
+    const t2 = mergeTiles(tiles[3][3], tiles[4][3]);
+
+    drawCube(mergeTiles(t1, t2), 50);
   };
 };
 
