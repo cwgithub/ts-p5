@@ -2,9 +2,10 @@ import * as p5 from "p5";
 import { PixelHelper } from "./PixelHelper";
 import { FloodFillNoiseCBW } from "./FloodFillNoiseCBW";
 import { Pixel } from "./Pixel";
+import { Tile } from "./Tile";
 
 export const sketch = (p: p5) => {
-  const gridSize = 10;
+  const gridPoints = 10;
   const edgeLength = 80;
   let yOffset = 0;
 
@@ -24,30 +25,75 @@ export const sketch = (p: p5) => {
     return new p5.Vector(500 + screen.x, yOffset + screen.y);
   }
 
-  function drawGridOutline(points: p5.Vector[]) {
+  function drawGridOutline(gridPoints: number, points: p5.Vector[]) {
     // draw the outline of the grid base
     p.beginShape();
     p.color(123, 100);
     p.strokeWeight(1);
     p.noFill();
+
+    const firstOfLastCol = (gridPoints - 1) * gridPoints;
+    const lastPoint = gridPoints * gridPoints - 1;
+
     p.quad(
       // top
       screenToRendered(points[0]).x,
       screenToRendered(points[0]).y,
       // leftmost
-      screenToRendered(points[gridSize - 1]).x,
-      screenToRendered(points[gridSize - 1]).y,
+      screenToRendered(points[gridPoints - 1]).x,
+      screenToRendered(points[gridPoints - 1]).y,
       // bottom
-      screenToRendered(points[99]).x,
-      screenToRendered(points[99]).y,
+      screenToRendered(points[lastPoint]).x,
+      screenToRendered(points[lastPoint]).y,
       // rightmost
-      screenToRendered(points[90]).x,
-      screenToRendered(points[90]).y
+      screenToRendered(points[firstOfLastCol]).x,
+      screenToRendered(points[firstOfLastCol]).y
     );
 
     // p.translate(500 + points[0].x, yOffset + points[0].y);
     // p.vertex(500 + points[9].x, yOffset + points[9].y);
     p.endShape();
+  }
+
+  function drawTile(tile: Tile) {
+    // draw the outline of the grid base
+    p.beginShape();
+    p.strokeWeight(0);
+    p.fill(200, 200, 200);
+
+    const n = screenToRendered(tile.north);
+    const e = screenToRendered(tile.east);
+    const s = screenToRendered(tile.south);
+    const w = screenToRendered(tile.west);
+
+    p.quad(n.x, n.y, e.x, e.y, s.x, s.y, w.x, w.y);
+
+    p.endShape();
+  }
+
+  function pointsToTiles(gridPoints: number, points: p5.Vector[]): Tile[][] {
+    const tiles = [];
+
+    for (let x = 0; x < gridPoints - 1; x++) {
+      const row = [];
+      for (let y = 0; y < gridPoints - 1; y++) {
+        const n = x * gridPoints + y;
+        const e = n + gridPoints;
+        const s = e + 1;
+        const w = n + 1;
+        const tile = new Tile(
+          `[${x},${y}]`,
+          points[n],
+          points[e],
+          points[s],
+          points[w]
+        );
+        row.push(tile);
+      }
+      tiles.push(row);
+    }
+
+    return tiles;
   }
 
   var table;
@@ -65,8 +111,8 @@ export const sketch = (p: p5) => {
 
     const points: p5.Vector[] = [];
 
-    for (let x = 0; x < gridSize; x++) {
-      for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridPoints; x++) {
+      for (let y = 0; y < gridPoints; y++) {
         let screen = gridToScreen(new p5.Vector(x, y));
         console.log(screen);
         points.push(screen);
@@ -78,7 +124,13 @@ export const sketch = (p: p5) => {
       p.point(renderedPoint.x, renderedPoint.y);
     });
 
-    drawGridOutline(points);
+    drawGridOutline(gridPoints, points);
+
+    const tiles = pointsToTiles(gridPoints, points);
+
+    drawTile(tiles[2][2]);
+
+    console.log(tiles);
   };
 };
 
