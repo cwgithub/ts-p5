@@ -21,8 +21,8 @@ export const sketch = (p: p5) => {
     );
   }
 
-  function screenToRendered(screen: p5.Vector): p5.Vector {
-    return new p5.Vector(500 + screen.x, yOffset + screen.y);
+  function screenToRendered(screen: p5.Vector, height = 0): p5.Vector {
+    return new p5.Vector(500 + screen.x, yOffset - height + screen.y);
   }
 
   function drawGridOutline(gridPoints: number, points: p5.Vector[]) {
@@ -50,8 +50,6 @@ export const sketch = (p: p5) => {
       screenToRendered(points[firstOfLastCol]).y
     );
 
-    // p.translate(500 + points[0].x, yOffset + points[0].y);
-    // p.vertex(500 + points[9].x, yOffset + points[9].y);
     p.endShape();
   }
 
@@ -67,6 +65,52 @@ export const sketch = (p: p5) => {
     const w = screenToRendered(tile.west);
 
     p.quad(n.x, n.y, e.x, e.y, s.x, s.y, w.x, w.y);
+
+    p.endShape();
+  }
+
+  function drawCube(tile: Tile) {
+    // draw the outline of the grid base
+    p.beginShape();
+    p.strokeWeight(0);
+
+    const baseN = screenToRendered(tile.north);
+    const baseE = screenToRendered(tile.east);
+    const baseS = screenToRendered(tile.south);
+    const baseW = screenToRendered(tile.west);
+
+    const topN = screenToRendered(tile.north, TILE_HEIGHT);
+    const topE = screenToRendered(tile.east, TILE_HEIGHT);
+    const topS = screenToRendered(tile.south, TILE_HEIGHT);
+    const topW = screenToRendered(tile.west, TILE_HEIGHT);
+
+    // base
+    p.fill(255, 64, 64, 36);
+
+    p.quad(
+      baseN.x,
+      baseN.y,
+      baseE.x,
+      baseE.y,
+      baseS.x,
+      baseS.y,
+      baseW.x,
+      baseW.y
+    );
+
+    // south side
+    p.fill(255, 64, 64, 64);
+
+    p.quad(topE.x, topE.y, baseE.x, baseE.y, baseS.x, baseS.y, topS.x, topS.y);
+
+    // west side
+    p.fill(255, 64, 64, 98);
+
+    p.quad(topS.x, topS.y, baseS.x, baseS.y, baseW.x, baseW.y, topW.x, topW.y);
+
+    // top
+    p.fill(255, 64, 64, 123);
+    p.quad(topN.x, topN.y, topE.x, topE.y, topS.x, topS.y, topW.x, topW.y);
 
     p.endShape();
   }
@@ -129,6 +173,8 @@ export const sketch = (p: p5) => {
     const tiles = pointsToTiles(gridPoints, points);
 
     drawTile(tiles[2][2]);
+
+    drawCube(tiles[0][1]);
 
     console.log(tiles);
   };
