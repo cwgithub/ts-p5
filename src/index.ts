@@ -53,7 +53,7 @@ export const sketch = (p: p5) => {
     p.endShape();
   }
 
-  function drawTile(tile: Tile) {
+  function drawSquareTile(tile: Tile) {
     // draw the outline of the grid base
     p.beginShape();
     p.strokeWeight(0);
@@ -65,6 +65,68 @@ export const sketch = (p: p5) => {
     const w = screenToRendered(tile.west);
 
     p.quad(n.x, n.y, e.x, e.y, s.x, s.y, w.x, w.y);
+
+    p.endShape();
+  }
+
+  function drawCircleTile(tile: Tile) {
+    // draw the outline of the grid base
+    p.beginShape();
+    p.strokeWeight(0.5);
+    p.fill(244);
+
+    const n = screenToRendered(tile.north);
+    const e = screenToRendered(tile.east);
+    const s = screenToRendered(tile.south);
+    const w = screenToRendered(tile.west);
+
+    p.ellipse(
+      n.x,
+      n.y + TILE_HEIGHT_HALF,
+      TILE_WIDTH_HALF * 1.3,
+      TILE_HEIGHT_HALF * 1.3
+    );
+
+    p.endShape();
+  }
+
+  function drawCylinder(tile: Tile, height = TILE_HEIGHT) {
+    // draw the outline of the grid base
+    p.beginShape();
+
+    const baseN = screenToRendered(tile.north);
+    const baseE = screenToRendered(tile.east);
+    const baseS = screenToRendered(tile.south);
+    const baseW = screenToRendered(tile.west);
+
+    const topN = screenToRendered(tile.north, height);
+    const topE = screenToRendered(tile.east, height);
+    const topS = screenToRendered(tile.south, height);
+    const topW = screenToRendered(tile.west, height);
+
+    p.fill(255);
+    p.strokeWeight(0);
+    p.quad(
+      topE.x - 14,
+      topE.y,
+      baseE.x - 14,
+      baseE.y,
+      baseW.x + 14,
+      baseW.y,
+      topW.x + 14,
+      topW.y
+    );
+
+    p.strokeWeight(0.5);
+    p.line(topE.x - 14, topE.y, baseE.x - 14, baseE.y);
+    p.line(baseW.x + 14, baseW.y, topW.x + 14, topW.y);
+
+    p.ellipse(
+      topN.x,
+      topN.y + TILE_HEIGHT_HALF,
+      TILE_WIDTH_HALF * 1.3,
+      TILE_HEIGHT_HALF * 1.3
+    );
 
     p.endShape();
   }
@@ -250,7 +312,9 @@ export const sketch = (p: p5) => {
   p.draw = () => {
     p.noLoop();
 
-    drawTile(tiles[2][2]);
+    drawSquareTile(tiles[8][8]);
+    drawCircleTile(tiles[8][7]);
+
     drawCube(tiles[4][4], 10);
     drawCube(tiles[5][4], 5);
     drawCube(tiles[4][5], 30);
@@ -286,6 +350,8 @@ export const sketch = (p: p5) => {
     const t2 = mergeTiles(tiles[3][3], tiles[4][3]);
 
     drawCube(mergeTiles(t1, t2), 50);
+
+    drawCylinder(tiles[8][7], 20);
   };
 };
 
