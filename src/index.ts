@@ -96,15 +96,22 @@ export const sketch = (p: p5) => {
 
     const baseN = screenToRendered(tile.north);
     const baseE = screenToRendered(tile.east);
-    const baseS = screenToRendered(tile.south);
     const baseW = screenToRendered(tile.west);
 
     const topN = screenToRendered(tile.north, height);
     const topE = screenToRendered(tile.east, height);
-    const topS = screenToRendered(tile.south, height);
     const topW = screenToRendered(tile.west, height);
 
     p.fill(255);
+
+    p.strokeWeight(0.5);
+    p.ellipse(
+      baseN.x,
+      baseN.y + TILE_HEIGHT_HALF,
+      TILE_WIDTH_HALF * 1.3,
+      TILE_HEIGHT_HALF * 1.3
+    );
+
     p.strokeWeight(0);
     p.quad(
       topE.x - 14,
@@ -118,9 +125,9 @@ export const sketch = (p: p5) => {
     );
 
     p.strokeWeight(0.5);
+
     p.line(topE.x - 14, topE.y, baseE.x - 14, baseE.y);
     p.line(baseW.x + 14, baseW.y, topW.x + 14, topW.y);
-
     p.ellipse(
       topN.x,
       topN.y + TILE_HEIGHT_HALF,
